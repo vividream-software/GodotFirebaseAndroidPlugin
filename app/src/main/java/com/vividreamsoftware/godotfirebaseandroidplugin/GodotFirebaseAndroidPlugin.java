@@ -1,6 +1,6 @@
 package com.vividreamsoftware.godotfirebaseandroidplugin;
 
-import android.content.Context;
+import android.os.Bundle;
 import android.util.ArraySet;
 
 import androidx.annotation.NonNull;
@@ -10,9 +10,11 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.godotengine.godot.Godot;
 import org.godotengine.godot.plugin.GodotPlugin;
 import org.godotengine.godot.plugin.SignalInfo;
+import org.godotengine.godot.Dictionary;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GodotFirebaseAndroidPlugin extends GodotPlugin{
@@ -32,27 +34,41 @@ public class GodotFirebaseAndroidPlugin extends GodotPlugin{
     @NonNull
     @Override
     public List<String> getPluginMethods() {
-        return Arrays.asList("getHello", "getHelloSignal", "initializeFirebase");
+        return Arrays.asList("setAnalyticsEnabled, logEvent");
     }
 
     @NonNull
     @Override
     public Set<SignalInfo> getPluginSignals() {
         Set<SignalInfo> signals = new ArraySet<>();
-        signals.add(new SignalInfo("testSignal", String.class));
+        signals.add(new SignalInfo("analyticsEnabledSet", Boolean.class));
+        signals.add(new SignalInfo("eventLogged", String.class));
         return signals;
     }
 
-    public String getHello(){
-        getHelloSignal("this is our test signal");
-        return "Hello World";
+    public void setAnalyticsEnabled(boolean consented){
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(consented);
+        analyticsEnabledSetSignal(consented);
     }
 
-    public void provideAnalyticsConsent(){
-        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
+    public void analyticsEnabledSetSignal(boolean consented){
+        emitSignal("analyticsEnabledSet", consented);
     }
 
-    public void getHelloSignal(String s){
-        emitSignal("testSignal", s);
+    public void logEvent(String eventName, Dictionary eventObject){
+        Bundle bundle = new Bundle();
+        for(Map.Entry<String, Object> entry : eventObject.entrySet()){
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            bundle.putString(key, value.toString());
+        }
+
+        mFirebaseAnalytics.logEvent(eventName, bundle);
+        eventLoggedSignal(eventName);
+    }
+
+    public void eventLoggedSignal(String eventName){
+        emitSignal("eventLogged", eventName);
     }
 }
