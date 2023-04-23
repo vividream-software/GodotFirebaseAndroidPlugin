@@ -34,7 +34,7 @@ public class GodotFirebaseAndroidPlugin extends GodotPlugin{
     @NonNull
     @Override
     public List<String> getPluginMethods() {
-        return Arrays.asList("setAnalyticsEnabled, logEvent");
+        return Arrays.asList("setAnalyticsEnabled", "logEvent", "analyticsEnabledSetSignal", "eventLoggedSignal");
     }
 
     @NonNull
@@ -47,6 +47,7 @@ public class GodotFirebaseAndroidPlugin extends GodotPlugin{
     }
 
     public void setAnalyticsEnabled(boolean consented){
+
         mFirebaseAnalytics.setAnalyticsCollectionEnabled(consented);
         analyticsEnabledSetSignal(consented);
     }
