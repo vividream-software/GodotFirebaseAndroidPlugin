@@ -20,6 +20,7 @@ public class GodotFirebaseAndroidPlugin extends GodotPlugin{
 
     public GodotFirebaseAndroidPlugin(Godot godot) {
         super(godot);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.getActivity());
     }
 
     @NonNull
@@ -47,9 +48,8 @@ public class GodotFirebaseAndroidPlugin extends GodotPlugin{
         return "Hello World";
     }
 
-    public void initializeFirebase(){
-        // dingo
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.getActivity());
+    public void provideAnalyticsConsent(){
+        mFirebaseAnalytics.setAnalyticsCollectionEnabled(true);
     }
 
     public void getHelloSignal(String s){
