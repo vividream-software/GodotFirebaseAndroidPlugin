@@ -31,11 +31,14 @@ dependencies {
     compileOnly fileTree(dir:"libs", includes: ["godot-lib.3.5.2.stable.mono.release.aar"])
 
     // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:31.5.0')
+    // NOTE: due to how godot ends up resolving these dependencies, BoM dependencies like this
+    // won't end up working.
+    // Might be nice to write a PR to improve GDAP files to take advantage of this somehow.
+    //implementation platform('com.google.firebase:firebase-bom:31.5.0')
 
     // When using the BoM, you don't specify versions in Firebase library dependencies
     // Add the dependency for the Firebase SDK for Google Analytics
-    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-analytics:21.2.2'
 
     // TODO: Add the dependencies for any other Firebase products you want to use
     // See https://firebase.google.com/docs/android/setup#available-libraries
